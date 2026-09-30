@@ -1,0 +1,53 @@
+{
+  "name": "Training_CAPM",
+  "version": "1.0.0",
+  "dependencies": {
+    "@cap-js-community/odata-v2-adapter": "^1.16.1",
+    "@cap-js/hana": "^3",
+    "@sap-cloud-sdk/connectivity": "^4",
+    "@sap-cloud-sdk/http-client": "^4",
+    "@sap-cloud-sdk/resilience": "^4.9.1",
+    "@sap/cds": "^9"
+  },
+  "devDependencies": {
+    "@cap-js/sqlite": "^2.4",
+    "@sap/cds-dk": "^9",
+    "cds-plugin-ui5": "^0.17.0",
+    "mbt": "^1.2.49",
+    "rimraf": "^5.0.5"
+  },
+  "scripts": {
+    "start": "cds-serve",
+    "watch-demoui5": "cds watch --open com.sap.demo.demoui5/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "undeploy": "cf undeploy Training_CAPM --delete-services --delete-service-keys --delete-service-brokers",
+    "build": "rimraf resources mta_archives && mbt build --mtar archive",
+    "deploy": "cf deploy mta_archives/archive.mtar --retries 1"
+  },
+  "private": true,
+  "cds": {
+    "requires": {
+      "db": "hana",
+      "SAP_ICSM_BusinessPartnerExt": {
+        "kind": "odata-v2",
+        "model": "srv/external/SAP_ICSM_BusinessPartnerExt",
+        "credentials": {
+          "url": "https://sandbox.api.sap.com/sap/opu/odata/sap/API_BUSINESS_PARTNER",
+          "headers": {
+            "APIKey": "<L28hcIIgBgohQII1OiCEnAZZ1tsBAR2d>"
+          }
+        }
+      },
+      "API_BUSINESS_PARTNER": {
+        "kind": "odata-v2",
+        "model": "srv/external/API_BUSINESS_PARTNER",
+        "credentials": {
+          "destination": "API-DEV",
+          "path": "/sap/opu/odata/sap/API_BUSINESS_PARTNER"
+        }
+      }
+    }
+  },
+  "workspaces": [
+    "app/*"
+  ]
+}
